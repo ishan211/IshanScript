@@ -7,14 +7,16 @@ export enum TokenType {
 	Number,
 	Identifier,
 
-	// Keywords
+    // Keywords
 	Let,
+    
+    // Grouping * Operators
+    BinaryOperator,
+    Equals,
+    OpenParen,
+    CloseParen,
+    EOF,
 
-	// Grouping * Operators
-	BinaryOperator,
-	Equals,
-	OpenParen,
-	CloseParen,
 }
 
 const KEYWORDS: Record<string, TokenType> = {
@@ -82,9 +84,21 @@ export function tokenize(SourceCode: string): Token[] {
                     tokens.push(token(ident, reserved));
                 }
                 
+            } else if (isskippable(src[0])){
+                src.shift();
+            } else {
+                console.log("Unrecognized char found insrc: ", src[0]);
+                Deno.exit(1);
             }
 
         }
     }
+    tokens.push({type: TokenType.EOF, value: "EOF"})
     return tokens;
+}
+
+
+const source = await Deno.readTextFile("./test.txt");
+for (const token of tokenize(source)){
+    console.log(token);
 }
