@@ -3,13 +3,12 @@ export type NodeType =
   | "Program"
   | "VarDeclaration"
   // EXPRESSIONS
+  | "AssignmentExpr"
   | "NumericLiteral"
   | "Identifier"
   | "BinaryExpr";
 
-/**
- * Statements do not result in a value at runtime.
- They contain one or more expressions internally */
+//Statements do not result in a value at runtime. They contain one or more expressions internally
 export interface Stmt {
   kind: NodeType;
 }
@@ -30,8 +29,14 @@ export interface VarDeclaration extends Stmt {
   value?: Expr;
 }
 
-/**  Expressions will result in a value at runtime unlike Statements */
+//Expressions will result in a value at runtime unlike Statements
 export interface Expr extends Stmt {}
+
+export interface AssignmentExpr extends Expr {
+  kind: "AssignmentExpr";
+  assigne: Expr;
+  value: Expr;
+}
 
 /**
  * A operation with two sides seperated by a operator.
@@ -46,17 +51,13 @@ export interface BinaryExpr extends Expr {
 }
 
 // LITERAL / PRIMARY EXPRESSION TYPES
-/**
- * Represents a user-defined variable or symbol in source.
- */
+//Represents a user-defined variable or symbol in source.
 export interface Identifier extends Expr {
   kind: "Identifier";
   symbol: string;
 }
 
-/**
- * Represents a numeric constant inside the soure code.
- */
+//Represents a numeric constant inside the soure code
 export interface NumericLiteral extends Expr {
   kind: "NumericLiteral";
   value: number;
