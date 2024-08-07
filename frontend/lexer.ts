@@ -9,9 +9,13 @@ export enum TokenType {
   // Grouping * Operators
   BinaryOperator,
   Equals,
+  Comma,
+  Colon,
   Semicolon,
-  OpenParen,
-  CloseParen,
+  OpenParen, // (
+  CloseParen, // )
+  OpenBrace, // {
+  CloseBrace, // }
   EOF, // Signified the end of file
 }
 
@@ -45,7 +49,7 @@ function isalpha(src: string) {
  * Returns true if the character is whitespace like -> [\s, \t, \n]
  */
 function isskippable(str: string) {
-  return str == " " || str == "\n" || str == "\t";
+  return str == " " || str == "\n" || str == "\t" || str == "\r";
 }
 
 /**
@@ -75,6 +79,10 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.OpenParen));
     } else if (src[0] == ")") {
       tokens.push(token(src.shift(), TokenType.CloseParen));
+    } else if (src[0] == "{") {
+      tokens.push(token(src.shift(), TokenType.OpenBrace));
+    } else if (src[0] == "}") {
+      tokens.push(token(src.shift(), TokenType.CloseBrace));
     } // HANDLE BINARY OPERATORS
     else if (
       src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/" ||
@@ -86,6 +94,10 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.Equals));
     } else if (src[0] == ";") {
       tokens.push(token(src.shift(), TokenType.Semicolon));
+    } else if (src[0] == ":") {
+      tokens.push(token(src.shift(), TokenType.Colon));
+    } else if (src[0] == ",") {
+      tokens.push(token(src.shift(), TokenType.Comma));
     } // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
     else {
       // Handle numeric literals -> Integers
